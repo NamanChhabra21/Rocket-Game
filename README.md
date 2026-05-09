@@ -11,3 +11,14 @@ Modules Used:
   - time
   - os
   - random
+
+## Screenshots:
+### Starting Screen
+![Starting Screen](Screenshots/Shot1.png)
+
+### Gameplay
+![Gameplay](Screenshots/Shot2.png)
+
+### Game Over Screen
+![Game Over](Screenshots/Shot3.png)
+
