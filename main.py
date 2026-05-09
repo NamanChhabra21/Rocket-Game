@@ -17,6 +17,7 @@ import pygame
 
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'   # TO Centralize The Screen
+
 pygame.init()
 
 info = pygame.display.Info()
@@ -60,8 +61,6 @@ heart_chances = [True]
 for i in range(0,heart_rate):
     heart_chances.append(False)
 
-# python -m PyInstaller --onefile --noconsole --icon=icon.ico ^
-
 
 clock = pygame.time.Clock()
 
@@ -93,6 +92,7 @@ asteroid = pygame.transform.scale(asteroid,(100,100))
 
 heart = pygame.image.load("assets\\life.png").convert_alpha()
 heart = pygame.transform.scale(heart,(70,70))
+
 class Block:
 
     def __init__(self,width):
@@ -123,7 +123,7 @@ class Block:
         if self.isheart:
             screen.blit(heart, (self.x, self.y))
             return
-        # pygame.draw.rect(self.screen, (255, 0, 0), (self.x, self.y, self.size, self.size))
+            
         screen.blit(self.aster,(self.x,self.y))
 
     def get_rect(self):
@@ -161,13 +161,9 @@ def play():
     score = 0
     x, y = 350, 500
     running = True
-    # colors = list(i for i in range(256))
-    # colorR = colors
-    # colorG = colors[::-1]
-    # a = 0
-    # reversing = False
+
     blocks = []
-    # ismax_score = 0
+    
     game_over_image = pygame.image.load("assets\\Game_Over.png")
     game_over_image = pygame.transform.scale(game_over_image,(screen_width//2,screen_height//2))
     for _ in range(3):  # number of blocks
@@ -206,13 +202,13 @@ def play():
                 current_message += 1
             temp_score3 = score
 
-        if not blocks:
+        if not blocks:  # If there are no asteriods on the screen, don't stop further calculation
             blit_message(message_text)
-            print("nO bLOCKS")
+            
             next_block_after -= 1
             score+=0.5
             if next_block_after <=0:
-                blocks.append(Block(screen_width))  # ✔ create new
+                blocks.append(Block(screen_width))  # create new
 
                 next_block_after = random.randint(0, int(after))
             continue
@@ -229,7 +225,7 @@ def play():
                 stars_y2 = gap
 
             screen.blit(rockets[number],(x,y))
-        # rect = screen.blit(rocket,(x,y))
+     
         keys = pygame.key.get_pressed()
         if not paused:
             # Game Controls
@@ -261,6 +257,7 @@ def play():
             check_block = blocks[:]
         else:
             check_block = blocks
+            
         for block in check_block:
 
             offset = (block.x-x,block.y-y)
@@ -284,7 +281,8 @@ def play():
                     blocks.remove(block)
                     life-=1
                     showhit = 5  # For 5 frames
-                    # Boundaries
+                    
+            # Hitting boundries changes Asteroids direction
             if not block.isheart:
                 if block.x <= -30:
                     block.turn = False
@@ -299,10 +297,10 @@ def play():
                 block.draw()
             if block:
                 if block.y > screen_height:
-                    blocks.remove(block)  # ❌ destroy
+                    blocks.remove(block)  # destroy asteroid
             if next_block_after <=0:
-                if len(blocks) < random.randint(4,lvl_difficult):  # mamimum obstacles
-                    blocks.append(Block(screen_width))  # ✔ create new
+                if len(blocks) < random.randint(4,lvl_difficult):  # to avoid too many obstacles on screen
+                    blocks.append(Block(screen_width))  # create new asteroid
 
                 next_block_after = random.randint(0, int(after))
                 print("Nextblock will come after: ",next_block_after)
@@ -322,7 +320,7 @@ def play():
                     print("Reset to 1000")
 
 
-        # Show Red Surface for a little time more
+        # Show Red Screen On Hit
         if showhit != 0:
             rect_curface = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
             rect_curface.fill((255, 0, 0, 70))
@@ -345,7 +343,8 @@ def play():
             screen.blit(max_score, max_score.get_rect(center=(screen_width//2,screen_height//2+90)))
         if not paused:
             blit_message(message_text)
-        # Window Management for now
+            
+        # Window Management ( TODO: Create seprate function for this )
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
 
@@ -373,7 +372,6 @@ def play():
 starting_bg = pygame.image.load("assets\\Background_Start.jpg")
 starting_bg = pygame.transform.scale(starting_bg,(screen_width,screen_height))
 
-# circlestart = pygame.image.load("Rotate_Pic.png")
 
 randx,randy = 0,0
 def starting_screen():
@@ -391,9 +389,9 @@ def starting_screen():
         if angle == 360:
             angle = 0
         screen.blit(starting_bg, (0, 0))
-        # screen.blit(rotate_image, (randx,260))
-        # time.sleep(0.05)
-        # Window Management for now
+        
+        
+        # Window Management
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 On = False
@@ -433,7 +431,7 @@ def starting_screen():
             randy = random.randint(0,screen_height-50)
             size = random.randint(1,3)
             pygame.draw.circle(screen,color,(randx,randy),size)
-        # circlestart = pygame.transform.scale(circlestart, (100,200))
+        
         pygame.draw.rect(screen,(255,255,255),((screen_width//2-230), (screen_height//2-150), 460, 290),barder)
 
 
@@ -445,8 +443,6 @@ def starting_screen():
         pygame.display.update()
 
 
-# play()
-# starting_screen()
 pygame.display.update()
 screen = pygame.display.set_mode((screen_width, screen_height))
 
