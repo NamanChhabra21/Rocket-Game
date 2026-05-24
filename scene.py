@@ -1,5 +1,3 @@
-import random
-
 import pygame
 import sys
 import splashscreen_engine as splash # For Video Playing | pip install splashscreen-engine
@@ -14,17 +12,15 @@ is_mute = False
 class GameOverScene:
     def __init__(self, width, height,mute=is_mute):
         global is_mute
-        window= splash.Screen()
+        window= splash.Screen(title_bar=True)
         window.size(width,height)
         window.start()
         window.title("GameOver")
 
-        skip_text = splash.Text(window,"Press `Space` to Skip.","lucida handwriting",30,(width*0.27,height*0.9))
+        skip_text = splash.Text(window,"Press `Space` to Skip.","lucida handwriting",30,"down")
         skip_text.show()
         bg_vid = splash.BackgroundVideo(window,"assets/Scenes/gameOverVid.mp4",fps=60)
         bg_vid.play()
-
-        pygame.display.set_mode((width, height))
 
         window.wait(0.5)
         sound1 = pygame.mixer.Channel(0)
@@ -63,17 +59,20 @@ class GameOverScene:
 class GameStartScene:
     def __init__(self, width, height,mute=is_mute):
         global is_mute
-        window= splash.Screen()
-        window.size(width,height)
+
+        window= splash.Screen(title_bar=True)
+        window.size(width, height)
         window.start()
+
+
         window.title("Rocket Game")
 
         bg_vid = splash.BackgroundVideo(window,"assets/Scenes/gameStartVid.mp4",fps=60)
         bg_vid.play()
-        skip_text = splash.Text(window, "Press `Space` to Skip.", "lucida handwriting", 30,
-                                (width * 0.27, height * 0.9))
+        skip_text = splash.Text(window, "Press `Space` to Skip.", "lucida handwriting", 30,"down")
         skip_text.show()
-        pygame.display.set_mode((width, height))
+
+
 
         # window.wait(1)
         sound1 = pygame.mixer.Channel(0)
