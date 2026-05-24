@@ -23,7 +23,7 @@ l_screen.start()
 
 loadingVid = splash.BackgroundVideo(l_screen,"assets\\loadingVid.mp4",loop=True)
 loadingVid.play()
-loadingBar = splash.LoadingBar(loadingVid)
+loadingBar = splash.LoadingBar(loadingVid,add_xy=(0,100))
 loadingBar.place()
 loadingBar.set_progress(5)
 
