@@ -8,13 +8,13 @@ Controls:
     
 Modules Used:
   - pygame ( Install it using `pip install pygame` )
-  - splashscreen_engine ( Install it using `pip install splashscreen-engine` )
+  - splashscreen_engine ( Install it using `pip install splashscreen-engine==2.0.1` )
   - time
   - os
   - random
   - threading
   - sys ( for exiting program safely )
-
+#### Note: Please ensure latest version of these modules
 ## Screenshots:
 ### Loading Screen
 ![Starting Screen](Screenshots/Shot1.png)
