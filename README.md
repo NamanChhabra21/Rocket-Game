@@ -8,7 +8,7 @@ Controls:
     
 Modules Used:
   - pygame ( Install it using `pip install pygame` )
-  - splashscreen_engine ( Install it using `pip install splashscreen-engine==2.0.1` )
+  - splashscreen_engine ( Install it using `pip install splashscreen-engine==2.0.4` )
   - time
   - os
   - random
