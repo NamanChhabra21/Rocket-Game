@@ -15,6 +15,10 @@ Modules Used:
   - threading
   - sys ( for exiting program safely )
 #### Note: Please ensure latest version of these modules
+---
+## Enabled with ingame Data Processing
+- Using Google's Firebase to store User data.
+- Using it for realtime data tracking ,feedback and rating support.
 ## Screenshots:
 ### Loading Screen
 ![Starting Screen](Screenshots/Shot1.png)
