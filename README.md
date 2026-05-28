@@ -7,14 +7,19 @@ Controls:
   - `m` to mute / unmute sounds
     
 Modules Used:
-  - pygame ( Install it using `pip install pygame` )
+  - pygame
   - splashscreen_engine ( Install it using `pip install splashscreen-engine==2.0.4` )
   - time
   - os
   - random
   - threading
-  - sys ( for exiting program safely )
-#### Note: Please ensure latest version of these modules
+  - sys
+  - platform
+  - requests
+  - json
+  - datetime
+  - uuid
+  - customtkinter
 ---
 ## Enabled with ingame Data Processing
 - Using Google's Firebase to store User data.
