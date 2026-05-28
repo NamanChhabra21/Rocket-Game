@@ -1,6 +1,11 @@
 import pygame
-import sys
 import splashscreen_engine as splash # For Video Playing | pip install splashscreen-engine
+import DataHandling
+
+def save_data():
+    DataHandling.update_last_played()
+    clock = pygame.time.Clock()
+    DataHandling.update_playtime(clock.get_time()/60)
 
 
 pygame.init()
@@ -9,10 +14,13 @@ pygame.display.set_caption("My Story")
 pygame.mixer.init()
 
 is_mute = False
+is_quit = False
 class GameOverScene:
-    def __init__(self, width, height,mute=is_mute):
-        global is_mute
+    def __init__(self, width, height,mute):
+        global is_mute,is_quit
+        is_mute = mute
         window= splash.Screen(title_bar=True)
+
         window.size(width,height)
         window.start()
         window.title("GameOver")
@@ -35,31 +43,36 @@ class GameOverScene:
                 # Handle window close
                 if event.type == pygame.QUIT:
                     sound1.stop()
-                    window.stop()
-                    sys.exit()  # Safely exits the entire Python script
+                    window.stop(quit_pygame=True)
+                    is_quit = True
+                    return
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_m:
 
                         if mute:
                             mute = False
+                            is_mute = False
                             sound1.set_volume(0.2)
                         else:
                             mute = True
+                            is_mute = True
                             sound1.set_volume(0)
                         is_mute = mute
                     if event.key == pygame.K_SPACE:
                         sound1.stop()
                         window.stop(quit_pygame=False)
                         pygame.display.update()
+                        save_data()
                         return
-
+        save_data()
         window.stop(quit_pygame=False)
+        save_data()
 
 
 class GameStartScene:
     def __init__(self, width, height,mute=is_mute):
-        global is_mute
-
+        global is_mute,is_quit
+        is_mute = mute
         window= splash.Screen(title_bar=True)
         window.size(width, height)
         window.start()
@@ -87,23 +100,28 @@ class GameStartScene:
                 # Handle window close
                 if event.type == pygame.QUIT:
                     sound1.stop()
-                    window.stop()
-                    sys.exit()  # Safely exits the entire Python script
+                    window.stop(quit_pygame=False)
+                    is_quit = True
+                    return
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_m:
 
                         if mute:
                             mute = False
+                            is_mute = False
                             sound1.set_volume(100)
                         else:
                             mute = True
+                            is_mute = True
                             sound1.set_volume(0)
                         is_mute = mute
                     if event.key == pygame.K_SPACE:
                         sound1.stop()
                         window.stop(quit_pygame=False)
                         pygame.display.update()
+                        save_data()
                         return
+        save_data()
         sound1.fadeout(3)
 
         window.stop(quit_pygame=False)
