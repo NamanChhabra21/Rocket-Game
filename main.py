@@ -1,4 +1,5 @@
 # GAME SETTING
+
 speed = 4
 difficulty = 20  # Maximum Blocks On Screen | DON'T PUT LESS THAN 6
 heart_rate = 60  # 1 / heart_rate blocks is heart
@@ -15,7 +16,25 @@ current_score = 0
 
 
 import scene    # All the scenes are made in scene.py file
+import DataHandling # Data Handling File
+import AdditionalUi
 import splashscreen_engine as splash # pip install splashscreen-engine
+import pygameButton
+
+
+
+Uid = DataHandling.Uid()
+if not Uid.is_created():
+    AdditionalUi.AskName() # Makes id by default
+# If user did not enetered the name
+if not Uid.is_created():
+    DataHandling.Uid("Guest").make()
+
+
+def save_data(time):
+    DataHandling.update_last_played()
+    DataHandling.update_playtime(time/60)
+
 
 l_screen = splash.Screen()
 l_screen.start()
@@ -91,8 +110,8 @@ clock = pygame.time.Clock()
 
 
 def high_score():
-    with open("assets\\Highest_score.txt", "r") as feee:
-        return int(feee.read().strip())
+    sc = DataHandling.get_high_score()
+    return sc
 
 
 high_scr = high_score()
@@ -111,12 +130,10 @@ def update_comet_rate(rate):
 update_comet_rate(comet_rate)
 
 def save_score(score_now):
-    with open("assets\\Highest_score.txt", "r") as f:
-        a = int(f.read().strip())
-        if a < score_now:
-            with open("assets\\Highest_score.txt", "w") as fe:
-                fe.write(f"{int(score_now)}")
 
+    a = DataHandling.get_high_score()
+    if a < score_now:
+        DataHandling.save_high_score(score_now)
 update_bar(35)
 def show_score(lifes, score, window):
     font = pygame.font.SysFont("Segoe UI Emoji", 20)
@@ -241,7 +258,7 @@ update_bar(60)
 
 def play():
     global paused, life, difficulty, mute, current_score , stars
-
+    save_data(clock.get_time())
     max_message = len(messages)
     current_message = 0
 
@@ -296,8 +313,11 @@ def play():
     stars_y2 = gap
 
     ## Play Scene-1 and store new value of mute
+    save_data(clock.get_time()) # Save play time before destroying screen
     scene.GameStartScene(screen_width, screen_height,mute)
     mute = scene.is_mute
+    if scene.is_quit:
+        return
 
     if not mute:
         start_sound.play()
@@ -310,6 +330,7 @@ def play():
         channel2.pause()
     bg_music.set_volume(70)
 
+    show_one_time_high_score = True
 
     game_over_vid_playOneTime = True
     while running:
@@ -399,16 +420,21 @@ def play():
                     if not paused and not mute:
                         channel2.fadeout(2000)
                     if game_over_vid_playOneTime:
-
                         # Play Scene-2 and store new value of mute | I forogot to use `if __name__ == '__main__':`
+                        save_data(clock.get_time())  # Save play time before destroying screen
                         scene.GameOverScene(screen_width,screen_height,mute)
                         mute = scene.is_mute
                         game_over_vid_playOneTime = False
+                        if scene.is_quit:
+                            save_score(score)
+                            running = False
+                            break
                     if not paused and not mute:
                         game_over_sound.play()
                     paused = True
                     game_over = True
                     save_score(score)
+
 
                 else:
                     if not mute:
@@ -452,6 +478,8 @@ def play():
                 if after <= 50:
                     after += 500
 
+        if not running:
+            continue
         # Show Red Screen On Hit
         if showhit != 0:
             rect_curface = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
@@ -466,8 +494,13 @@ def play():
             screen.blit(game_over_image, (screen_width // 4, screen_height // 4))
         else:
             show_score(life, score, screen)
+
         if game_over:
-            ismax_score = high_score()
+            if show_one_time_high_score == True:
+                ismax_score = high_score()
+                show_one_time_high_score = ismax_score
+            else:
+                ismax_score = show_one_time_high_score
             font = pygame.font.Font(None, 40)
             final_score = font.render(f"{int(score)}", True, (255, 255, 255))
             screen.blit(final_score, final_score.get_rect(center=(screen_width / 2, screen_height / 2 + 20)))
@@ -480,6 +513,7 @@ def play():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                save_data(clock.get_time())
                 break
 
             if event.type == pygame.KEYDOWN:
@@ -525,6 +559,9 @@ def starting_screen():
     if mute:
         channel.pause()
     menu_cound.set_volume(100)
+
+    Rate_Button = pygameButton.Button(screen_width-105,screen_height-40,100,30,"Rate Us",None,30,(0,0,0),(50,50,0),(255,255,0))
+    Feedback_Button = pygameButton.Button(screen_width - 220, screen_height - 40, 110, 30, "Feedback", None, 30, (0, 0, 0),(0,25,0),(0,255,0))
     while On:
         if not channel.get_busy() and not mute:
             channel.play(menu_cound)
@@ -541,6 +578,7 @@ def starting_screen():
             if event.type == pygame.QUIT:
                 On = False
                 channel.fadeout(3000)
+                save_data(clock.get_time())
                 break
 
             if event.type == pygame.KEYDOWN:
@@ -559,8 +597,15 @@ def starting_screen():
                     elif not mute:
                         channel.pause()
                         mute = True
+            if Rate_Button.clicked(event):
+                AdditionalUi.RateUs()
+                pygame.event.clear()
+            if Feedback_Button.clicked(event):
+                AdditionalUi.Feedback()
+                pygame.event.clear()
 
         if not On:
+            save_data(clock.get_time())
             break
 
         # Making Some Animation
@@ -581,6 +626,8 @@ def starting_screen():
         control_text = load_font.render(txt, 1, (255, 255, 100))
         screen.blit(control_text, control_text.get_rect(center=(screen_width // 2, screen_height // 2 + 250)))
 
+        Rate_Button.draw(screen)
+        Feedback_Button.draw(screen)
         clock.tick(7)
         pygame.display.update()
 update_bar(100)
@@ -591,5 +638,16 @@ while l_screen.running:
 pygame.display.update()
 screen = pygame.display.set_mode((screen_width, screen_height))
 starting_screen()
-
+save_score(current_score)
+save_data(clock.get_time())
 pygame.quit()
+
+# Saving data to Firebase
+try:
+    DataHandling.save_database()
+except Exception as e:
+    DataHandling.add_error(e)
+
+
+# I am an intermediate developer, hence my code looks heavy and less understandable
+# YOUR TASK : Fork this Repo and Rebuild the architecture :) Enjoy Coding
