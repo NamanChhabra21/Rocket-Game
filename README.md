@@ -1,3 +1,15 @@
+
+<tr>
+<td align="center">
+
+<img src="https://raw.githubusercontent.com/NamanChhabra21/Rocket-Game/main/Screenshots/GIFsample.gif" width="600">
+
+</td>
+
+<td align="center">
+</td>
+</tr>
+
 # Rocket-Game
 An UNENDING 2D rocket Game created with Pygame. Featuring custom music, graphics, and keyboard controls. Contains Starting and Ending scene as Videos.
 
